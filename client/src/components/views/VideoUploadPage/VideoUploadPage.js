@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Typography, Button, Form, message, Input, Icon } from 'antd';
 import Dropzone from 'react-dropzone';
 import { useSelector } from 'react-redux';
-
+import Axios from 'axios'
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -19,7 +19,6 @@ const CategoryOptions = [
     {value:3, label: "애완동물"},
 ]
 
-
 function VideoUploadPage(props) {
 
     const user = useSelector(state => state.user);
@@ -27,6 +26,9 @@ function VideoUploadPage(props) {
     const [Description, setDescription] = useState("")
     const [Private, setPrivate] = useState(0)
     const [Category, setCategory] = useState("영화 & 애니메이션")
+    const [FilePath, setFilePath] = useState("")
+    const [Duration, setDuration] = useState("")
+    const [ThumbnailPath, setThumbnailPath] = useState("")
 
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value)
@@ -44,6 +46,41 @@ function VideoUploadPage(props) {
         setCategory(e.currentTarget.value)
     }
 
+    const onDrop = (files) => {
+
+        let formData = new FormData();
+        const config = {
+            header: { 'content-type': 'multipart/form-data' }
+        }
+        formData.append("file", files[0])
+
+        Axios.post('/api/video/uploadfiles', formData, config)
+            .then(response => {
+                if (response.data.success) {
+                    let variable = {
+                        url: response.data.url,
+                        fileName: response.data.fileName
+                    }
+                    setFilePath(response.data.url)
+
+                    Axios.post('/api/video/thumbnail', variable)
+                        .then(response => {
+                            if (response.data.success) {
+                                setDuration(response.data.fileDuration)
+                                setThumbnailPath(response.data.thumbsUrl)
+                            
+                            } else {
+                                alert('썸네일 생성에 실패했습니다.')
+                            }
+                        })
+
+                } else {
+                    alert('비디오 업로드를 실패했습니다.')
+                }
+            })
+
+    }
+
     return (
         <div style={{ maxWidth:'700px', margin:'2rem auto' }}>
             <div style={{ textAlign: 'center', marginBottom:'2rem' }}>
@@ -52,9 +89,9 @@ function VideoUploadPage(props) {
             <Form onSubmit>
                 <div style={{ display:'flex', justifyContent:'space-between' }}>
                     <Dropzone
-                    onDrop
-                    multiple
-                    maxSize
+                    onDrop={onDrop}
+                    multiple={false}
+                    maxSize={1000000000}
                     >
                     {({ getRootProps, getInputProps}) => (
                         <div style={{ width: '300px', height: '240px', border:'1px solid lightgray', display:'flex', 
@@ -65,7 +102,11 @@ function VideoUploadPage(props) {
                         </div>
                     )}
                     </Dropzone>
-                    {/* Thumbnail */}
+                    {ThumbnailPath !== "" &&
+                        <div>
+                            <img src={`http://localhost:5000/${ThumbnailPath}`} alt="thumbnail" />
+                        </div>
+                    }
                     
                 </div>
 
