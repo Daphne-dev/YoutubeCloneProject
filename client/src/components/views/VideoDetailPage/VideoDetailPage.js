@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { List, Avatar, Row, Col } from 'antd';
+import SideVideo from './Sections/SideVideo';
 import Axios from 'axios';
 
 
@@ -48,7 +49,7 @@ function DetailVideoPage(props) {
                 </Col>
                 <Col lg={6} xs={24}>
 
-                    {/* <SideVideo /> */}
+                    <SideVideo />
 
                 </Col>
             </Row>
