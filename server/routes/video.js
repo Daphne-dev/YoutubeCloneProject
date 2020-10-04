@@ -38,7 +38,6 @@ router.post("/uploadfiles", (req, res) => {
     })
 });
 
-
 router.post("/thumbnail", (req, res) => {
 
     let thumbsFilePath ="";
@@ -75,9 +74,6 @@ router.post("/thumbnail", (req, res) => {
 
 });
 
-
-
-
 router.get("/getVideos", (req, res) => {
 
     Video.find()
@@ -87,7 +83,6 @@ router.get("/getVideos", (req, res) => {
             res.status(200).json({ success: true, videos })
         })
 });
-
 
 
 router.post("/uploadVideo", (req, res) => {
@@ -101,17 +96,15 @@ router.post("/uploadVideo", (req, res) => {
 
 });
 
-
-router.post("/getVideo", (req, res) => {
+router.post("/getVideoDetail", (req, res) => {
 
     Video.findOne({ "_id" : req.body.videoId })
-    .populate('writer')
-    .exec((err, video) => {
-        if(err) return res.status(400).send(err);
-        res.status(200).json({ success: true, video })
+        .populate('writer')
+        .exec((err, videoDetail) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({ success: true, videoDetail })
     })
 });
-
 
 router.post("/getSubscriptionVideos", (req, res) => {
 
