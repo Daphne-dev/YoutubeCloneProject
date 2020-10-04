@@ -50,7 +50,6 @@ router.post("/thumbnail", (req, res) => {
         fileDuration = metadata.format.duration;
     })
 
-
     ffmpeg(req.body.url)
         .on('filenames', function (filenames) {
             console.log('Will generate ' + filenames.join(', '))

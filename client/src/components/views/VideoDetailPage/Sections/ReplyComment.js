@@ -5,6 +5,7 @@ function ReplyComment(props) {
 
     const [ChildCommentNumber, setChildCommentNumber] = useState(0)
     const [OpenReplyComments, setOpenReplyComments] = useState(false)
+    
     useEffect(() => {
 
         let commentNumber = 0;
@@ -12,11 +13,11 @@ function ReplyComment(props) {
 
             if (comment.responseTo === props.parentCommentId) {
                 commentNumber++
-            }
+            } 
+        
         })
         setChildCommentNumber(commentNumber)
     }, [props.commentLists, props.parentCommentId])
-
 
     let renderReplyComment = (parentCommentId) =>
         props.commentLists.map((comment, index) => (
@@ -34,14 +35,13 @@ function ReplyComment(props) {
         setOpenReplyComments(!OpenReplyComments)
     }
 
-
     return (
         <div>
             {ChildCommentNumber > 0 &&
                 <p style={{ fontSize: '14px', margin: 0, color: 'gray' }}
                     onClick={onhandleChange} >
                     답글 {ChildCommentNumber}개 보기... 
-             </p>
+                </p>
             }
 
             {OpenReplyComments &&
